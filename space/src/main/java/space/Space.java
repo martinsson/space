@@ -18,31 +18,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Space extends JFrame implements MouseWheelListener,
-        MouseMotionListener, KeyListener {
-    public static final double EARTH_WEIGHT = 5.9736e24;
+        MouseMotionListener, KeyListener, SpaceFrame {
     private static final double ASTRONOMICAL_UNIT = 149597870.7e3;
-    static boolean IS_BOUNCING_BALLS = false;
-    static boolean IS_BREAKOUT = false; // Opens bottom, only active if IS_BOUNCING_BALLS is true
-
-
     private static final long serialVersionUID = 1532817796535372081L;
 
     private static final double G = 6.67428e-11; // m3/kgs2
-    public static double seconds = 1;
+    private double seconds = 1;
+    private boolean isBouncingBalls;
+    private boolean isBreakout;
+
     private static List<PhysicalObject> objects = new ArrayList<PhysicalObject>();
-    static double centrex = 0.0;
-    static double centrey = 0.0;
-    static double scale = 10;
+    private double centrex = 0.0;
+    private double centrey = 0.0;
+    private double scale = 10;
     private static boolean showWake = false;
     private static int step = 0;
     private static int nrOfObjects = 75;
     private static int frameRate = 25;
 
-    static JFrame frame;
-
     public Space() {
         setBackground(Color.BLACK);
-        Space.frame = this;
+        this.isBouncingBalls = AppConfiguration.IS_BOUNCING_BALLS;
+        this.isBreakout = AppConfiguration.IS_BREAKOUT;
     }
 
     @Override
@@ -56,7 +53,7 @@ public class Space extends JFrame implements MouseWheelListener,
             }
             for (PhysicalObject po : objects) {
                 po.paintPhysicalObject(graphics);
-                String string = "Objects:" + objects.size() + " scale:" + scale + " steps:" + step + " frame rate: " + frameRate;
+                String string = "Objects:" + objects.size() + " scale:" + getScale() + " steps:" + step + " frame rate: " + frameRate;
                 setTitle(string);
             }
             original.drawImage(buffer, 0, 0, getWidth(), getHeight(), null);
@@ -64,7 +61,8 @@ public class Space extends JFrame implements MouseWheelListener,
 
     }
 
-    public static Color weightToColor(double weight) {
+    @Override
+    public Color weightToColor(double weight) {
         if (weight < 1e10) return Color.GREEN;
         if (weight < 1e12) return Color.CYAN;
         if (weight < 1e14) return Color.MAGENTA;
@@ -84,7 +82,7 @@ public class Space extends JFrame implements MouseWheelListener,
         space.addKeyListener(space);
         space.setSize(800, 820);
 
-        if (!IS_BOUNCING_BALLS) {
+        if (!AppConfiguration.IS_BOUNCING_BALLS) {
             space.setStepSize(3600 * 24 * 7);
 
             double outerLimit = ASTRONOMICAL_UNIT * 20;
@@ -99,12 +97,12 @@ public class Space extends JFrame implements MouseWheelListener,
 
                 double vx = speedRandom * Math.sin(angle - Math.PI / 2);
                 double vy = speedRandom * Math.cos(angle - Math.PI / 2);
-                add(weightKilos, x, y, vx, vy, 1);
+                add(weightKilos, x, y, vx, vy, 1, space);
             }
 
-            scale = outerLimit / space.getWidth();
+            space.setScale(outerLimit / space.getWidth());
 
-            add(EARTH_WEIGHT * 20000, 0, 0, 0, 0, 1);
+            add(EARTH_WEIGHT * 20000, 0, 0, 0, 0, 1, space);
         } else {
             nrOfObjects = 50;
             space.setStepSize(1); // One second per iteration
@@ -112,11 +110,11 @@ public class Space extends JFrame implements MouseWheelListener,
                 // radius,weight in [1,20]
                 double radiusAndWeight = 1 + 19 * Math.random();
                 //x,y in [max radius, width or height - max radius]
-                Space.add(radiusAndWeight, 20 + 760 * Math.random(), 20 + 760 * Math.random(), 3 - 6 * Math.random(), 3 - 6 * Math.random(), radiusAndWeight);
+                Space.add(radiusAndWeight, 20 + 760 * Math.random(), 20 + 760 * Math.random(), 3 - 6 * Math.random(), 3 - 6 * Math.random(), radiusAndWeight, new Space());
             }
-            scale = 1;
-            centrex = 400;
-            centrey = 390; //Must compensate for title bar
+            space.setScale(1);
+            space.setCentrex(400);
+            space.setCentrey(390); //Must compensate for title bar
         }
         space.setVisible(true);
         while (true) {
@@ -148,19 +146,19 @@ public class Space extends JFrame implements MouseWheelListener,
     }
 
     public void setStepSize(double seconds) {
-        Space.seconds = seconds;
+        this.seconds = seconds;
     }
 
     public static PhysicalObject add(double weightKilos, double x, double y,
-                                     double vx, double vy, double radius) {
+                                     double vx, double vy, double radius, Space space) {
         PhysicalObject physicalObject = new PhysicalObject(weightKilos, x, y,
-                vx, vy, radius);
+                vx, vy, radius, space);
         objects.add(physicalObject);
         return physicalObject;
     }
 
     public void step() {
-        if (!IS_BOUNCING_BALLS) {
+        if (!isBouncingBalls()) {
             for (PhysicalObject aff : objects) {
                 double fx = 0;
                 double fy = 0;
@@ -176,15 +174,15 @@ public class Space extends JFrame implements MouseWheelListener,
                 }
                 double ax = fx / aff.mass;
                 double ay = fy / aff.mass;
-                aff.x = aff.x - ax * Math.pow(seconds, 2) / 2 + aff.vx * seconds;
-                aff.y = aff.y - ay * Math.pow(seconds, 2) / 2 + aff.vy * seconds;
-                aff.vx = aff.vx - ax * seconds;
-                aff.vy = aff.vy - ay * seconds;
+                aff.x = aff.x - ax * Math.pow(getSeconds(), 2) / 2 + aff.vx * getSeconds();
+                aff.y = aff.y - ay * Math.pow(getSeconds(), 2) / 2 + aff.vy * getSeconds();
+                aff.vx = aff.vx - ax * getSeconds();
+                aff.vy = aff.vy - ay * getSeconds();
             }
         } else {
             for (PhysicalObject physicalObject : objects) {
-                physicalObject.x = physicalObject.x + physicalObject.vx * seconds;
-                physicalObject.y = physicalObject.y + physicalObject.vy * seconds;
+                physicalObject.x = physicalObject.x + physicalObject.vx * getSeconds();
+                physicalObject.y = physicalObject.y + physicalObject.vy * getSeconds();
             }
 
         }
@@ -201,7 +199,7 @@ public class Space extends JFrame implements MouseWheelListener,
             for (PhysicalObject other : objects) {
                 if (one == other || remove.contains(other))
                     continue;
-                if (!IS_BOUNCING_BALLS) {
+                if (!isBouncingBalls()) {
                     if (Math.sqrt(Math.pow(one.x - other.x, 2) + Math.pow(one.y - other.y, 2)) < 5e9) {
                         one.absorb(other);
                         remove.add(other);
@@ -215,7 +213,7 @@ public class Space extends JFrame implements MouseWheelListener,
                 }
             }
             // Wall collision reverses speed in that direction
-            if (IS_BOUNCING_BALLS) {
+            if (isBouncingBalls()) {
                 if (one.x - one.radius < 0) {
                     one.vx = -one.vx;
                 }
@@ -225,7 +223,7 @@ public class Space extends JFrame implements MouseWheelListener,
                 if (one.y - one.radius < 0) {
                     one.vy = -one.vy;
                 }
-                if (one.y + one.radius > 800 && !IS_BREAKOUT) {
+                if (one.y + one.radius > 800 && !isBreakout()) {
                     one.vy = -one.vy;
                 } else if (one.y - one.radius > 800) {
                     remove.add(one);
@@ -237,8 +235,8 @@ public class Space extends JFrame implements MouseWheelListener,
 
 
     public void mouseWheelMoved(final MouseWheelEvent e) {
-        if (!IS_BOUNCING_BALLS) {
-            scale = scale + scale * (Math.min(9, e.getWheelRotation())) / 10 + 0.0001;
+        if (!isBouncingBalls()) {
+            setScale(getScale() + getScale() * (Math.min(9, e.getWheelRotation())) / 10 + 0.0001);
             getGraphics().clearRect(0, 0, getWidth(), getHeight());
         }
     }
@@ -247,12 +245,12 @@ public class Space extends JFrame implements MouseWheelListener,
 
 
     public void mouseDragged(final MouseEvent e) {
-        if (!IS_BOUNCING_BALLS) {
+        if (!isBouncingBalls()) {
             if (lastDrag == null) {
                 lastDrag = e.getPoint();
             }
-            centrex = centrex - ((e.getX() - lastDrag.x) * scale);
-            centrey = centrey - ((e.getY() - lastDrag.y) * scale);
+            setCentrex(getCentrex() - ((e.getX() - lastDrag.x) * getScale()));
+            setCentrey(getCentrey() - ((e.getY() - lastDrag.y) * getScale()));
             lastDrag = e.getPoint();
             getGraphics().clearRect(0, 0, getWidth(), getHeight());
         }
@@ -275,6 +273,63 @@ public class Space extends JFrame implements MouseWheelListener,
     public void keyTyped(KeyEvent e) {
         if (e.getKeyChar() == 'w')
             showWake = !showWake;
+    }
+
+    @Override
+    public boolean isBouncingBalls() {
+        return isBouncingBalls;
+    }
+    @Override
+    public boolean isBreakout() {
+        return isBreakout;
+    }
+
+    @Override
+    public double getSeconds() {
+        return seconds;
+    }
+
+    void setCentrex(double centrex) {
+        this.centrex = centrex;
+    }
+
+    double getCentrex() {
+        return centrex;
+    }
+
+    void setCentrey(double centrey) {
+        this.centrey = centrey;
+    }
+
+    double getCentrey() {
+        return centrey;
+    }
+
+    void setScale(double scale) {
+        this.scale = scale;
+    }
+
+    double getScale() {
+        return scale;
+    }
+
+    @Override
+    public double newYpos(double y) {
+        return (y - getCentrey()) / getScale() + getSize().height / 2;
+    }
+
+    @Override
+    public double newXpos(double x) {
+        return (x - getCentrex()) / getScale() + getSize().width / 2;
+    }
+    @Override
+    public double newYposBreakout(double y) {
+        return (y - getCentrey())  + getSize().height / 2;
+    }
+
+    @Override
+    public double newXposBreakout(double x) {
+        return (x - getCentrex())  + getSize().width / 2;
     }
 
 }
