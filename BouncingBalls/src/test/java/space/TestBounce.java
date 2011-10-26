@@ -12,8 +12,8 @@ public class TestBounce {
 
     @Test
     public void straightOn() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 0, 0, 0, 0, 1, space);
-        BouncingBalls two = new BouncingBalls(1, -1, 0, 1, 0, 1, space);
+        BouncingBall one = new BouncingBall(1, 0, 0, 0, 0, 1, space);
+        BouncingBall two = new BouncingBall(1, -1, 0, 1, 0, 1, space);
         one.hitBy(two);
         assertEquals(1.0, one.vx, 0.0001);
         assertEquals(0.0, one.vy, 0.0001);
@@ -25,8 +25,8 @@ public class TestBounce {
 
     @Test
     public void straightOnVerticalDifferentMass() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 0, 0, 0, -1, 0.5, space);
-        BouncingBalls two = new BouncingBalls(2, 0, -1, 0, 1, 0.5, space);
+        BouncingBall one = new BouncingBall(1, 0, 0, 0, -1, 0.5, space);
+        BouncingBall two = new BouncingBall(2, 0, -1, 0, 1, 0.5, space);
         one.hitBy(two);
         assertEquals(5.0 / 3, one.vy, 0.0001);
         assertEquals(-1.0 / 3, two.vy, 0.0001);
@@ -34,8 +34,8 @@ public class TestBounce {
 
     @Test
     public void straightOnDifferentMass1() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 0, 0, -1, 0, 0.5, space);
-        BouncingBalls two = new BouncingBalls(2, -1, 0, 1, 0, 0.5, space);
+        BouncingBall one = new BouncingBall(1, 0, 0, -1, 0, 0.5, space);
+        BouncingBall two = new BouncingBall(2, -1, 0, 1, 0, 0.5, space);
         one.hitBy(two);
         assertEquals(5.0 / 3, one.vx, 0.0001);
         assertEquals(-1.0 / 3, two.vx, 0.0001);
@@ -43,8 +43,8 @@ public class TestBounce {
 
     @Test
     public void straightOnDifferentMass2() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 0, 0, -1, 0, 0.5, space);
-        BouncingBalls two = new BouncingBalls(2, -1, 0, 1, 0, 0.5, space);
+        BouncingBall one = new BouncingBall(1, 0, 0, -1, 0, 0.5, space);
+        BouncingBall two = new BouncingBall(2, -1, 0, 1, 0, 0.5, space);
         one.hitBy(two);
         assertEquals(-1.0 / 3, two.vx, 0.0001);
         assertEquals(0, two.vy, 0.0001);
@@ -52,8 +52,8 @@ public class TestBounce {
 
     @Test
     public void with90degImpactAngle() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 1, 0, 0, 1, sqrt(0.5), space);
-        BouncingBalls two = new BouncingBalls(1, 0, 1, 1, 0, sqrt(0.5), space);
+        BouncingBall one = new BouncingBall(1, 1, 0, 0, 1, sqrt(0.5), space);
+        BouncingBall two = new BouncingBall(1, 0, 1, 1, 0, sqrt(0.5), space);
         one.hitBy(two);
         assertEquals(1, one.vx, 0.0001);
         assertEquals(0, one.vy, 0.0001);
@@ -63,8 +63,8 @@ public class TestBounce {
 
     @Test
     public void with90degImpactAngleTurned() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 0, 0, 1, 1, 0.5, space);
-        BouncingBalls two = new BouncingBalls(1, 1, 0, -1, 1, 0.5, space);
+        BouncingBall one = new BouncingBall(1, 0, 0, 1, 1, 0.5, space);
+        BouncingBall two = new BouncingBall(1, 1, 0, -1, 1, 0.5, space);
         one.hitBy(two);
         assertEquals(-1, one.vx, 0.0001);
         assertEquals(1, one.vy, 0.0001);
@@ -75,8 +75,8 @@ public class TestBounce {
 
     @Test
     public void with45degImpactAngle() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 0, 0, 0, 0, 0.5, space);
-        BouncingBalls two = new BouncingBalls(1, -1, 1, 1, 0, 0.5, space);
+        BouncingBall one = new BouncingBall(1, 0, 0, 0, 0, 0.5, space);
+        BouncingBall two = new BouncingBall(1, -1, 1, 1, 0, 0.5, space);
         one.hitBy(two);
         assertEquals(0.5, one.vx, 0.0001);
         assertEquals(-0.5, one.vy, 0.0001);
@@ -86,8 +86,8 @@ public class TestBounce {
 
     @Test
     public void with45degImpactAngleFromBelow() throws Exception {
-        BouncingBalls one = new BouncingBalls(1, 0, 0, 0, 0, 0.5, space);
-        BouncingBalls two = new BouncingBalls(1, -1, 0, 1, 1, 0.5, space);
+        BouncingBall one = new BouncingBall(1, 0, 0, 0, 0, 0.5, space);
+        BouncingBall two = new BouncingBall(1, -1, 0, 1, 1, 0.5, space);
         one.hitBy(two);
         assertEquals(1, one.vx, 0.0001);
         assertEquals(0, one.vy, 0.0001);

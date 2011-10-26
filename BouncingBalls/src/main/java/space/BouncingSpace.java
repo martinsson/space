@@ -1,22 +1,13 @@
 package space;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 
 public class BouncingSpace extends Space {
 
     private static final long serialVersionUID = 1L;
+    private boolean isBreakout;
 
     public BouncingSpace(boolean isBreakout) {
-        super(isBreakout);
-    }
-
-    @Override
-    public void mouseWheelMoved(final MouseWheelEvent e) {
-    }
-
-    @Override
-    public void mouseDragged(final MouseEvent e) {
+        this.isBreakout = isBreakout;
     }
 
     public double newYpos(double y) {

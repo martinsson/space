@@ -20,7 +20,7 @@ class BouncingBallsMain {
         for (int i = 0; i < Space.nrOfObjects; i++) {
             // radius,weight in [1,20]
             double radiusAndWeight = 1 + 19 * Math.random();
-            BouncingBalls physicalObject = new BouncingBalls(radiusAndWeight, 20 + 760 * Math.random(), 20 + 760 * Math.random(),
+            BouncingBall physicalObject = new BouncingBall(radiusAndWeight, 20 + 760 * Math.random(), 20 + 760 * Math.random(),
                     3 - 6 * Math.random(), 3 - 6 * Math.random(), radiusAndWeight, space);
             Space.add(physicalObject);
             //x,y in [max radius, width or height - max radius]

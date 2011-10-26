@@ -1,13 +1,10 @@
 package space;
 
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,13 +13,8 @@ import java.util.List;
 import javax.swing.JFrame;
 
 public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame {
-
-    
     private static final long serialVersionUID = 1532817796535372081L;
-
     private double seconds = 1;
-    protected boolean isBreakout;
-
     private static List<PhysicalObject> objects = new ArrayList<PhysicalObject>();
     private double centrex = 0.0;
     private double centrey = 0.0;
@@ -61,9 +53,6 @@ public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame 
             }
         }
     }
-    protected Space(boolean isBreakout) {
-        this.isBreakout = isBreakout;
-    }
 
     @Override
     public void paint(Graphics original) {
@@ -84,26 +73,9 @@ public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame 
 
     }
 
-    @Override
-    public Color weightToColor(double weight) {
-        if (weight < 1e10) return Color.GREEN;
-        if (weight < 1e12) return Color.CYAN;
-        if (weight < 1e14) return Color.MAGENTA;
-        if (weight < 1e16) return Color.BLUE;
-        if (weight < 1e18) return Color.GRAY;
-        if (weight < 1e20) return Color.RED;
-        if (weight < 1e22) return Color.ORANGE;
-        if (weight < 1e25) return Color.PINK;
-        if (weight < 1e28) return Color.YELLOW;
-        return Color.WHITE;
-    }
-
-
     public void setStepSize(double seconds) {
         this.seconds = seconds;
     }
-
-    
     
     public void step() {
         for (PhysicalObject o : objects) {
@@ -131,11 +103,6 @@ public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame 
         }
         objects.removeAll(remove);
     }
-
-    public abstract void mouseWheelMoved(final MouseWheelEvent e);
-    public abstract void mouseDragged(final MouseEvent e);
-
-
 
     public void keyPressed(KeyEvent e) {
     }

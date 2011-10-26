@@ -6,11 +6,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.List;
 
-public class BouncingBalls extends PhysicalObject {
+public class BouncingBall extends PhysicalObject {
 
     private BouncingSpace bouncingSpace;
 
-    public BouncingBalls(double weightKilos, double x, double y, double vx, double vy, double radius, BouncingSpace space) {
+    public BouncingBall(double weightKilos, double x, double y, double vx, double vy, double radius, BouncingSpace space) {
         super(weightKilos, x, y, vx, vy, radius, space);
     }
 
@@ -30,7 +30,7 @@ public class BouncingBalls extends PhysicalObject {
         return null;
     }
     
-    public void hitBy(PhysicalObject other) {
+    void hitBy(PhysicalObject other) {
         // find collision point by backstepping
 
         //backstep increment
