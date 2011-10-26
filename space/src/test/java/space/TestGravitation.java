@@ -1,20 +1,23 @@
 package space;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 public class TestGravitation {
 
     @Test
     public void gravitationalFormulaIsCorrect() throws Exception {
-        Space s = new Space();
+        Space s = new SolarSystem();
         s.setStepSize(1);
         double earthsWeight = 5.9736e24;
         int earthsRadius = 6371000;
-        PhysicalObject earth = Space.add(earthsWeight, 0, -earthsRadius, 0, 0, 1, new Space());
-        PhysicalObject lump = Space.add(1, 0, 10, 0, 0, 1, new Space());
-        AppConfiguration.IS_BOUNCING_BALLS = false;
+        StellarBody earth = new StellarBody(earthsWeight, 0, -earthsRadius,
+                0, 0, 1, s);
+        Space.add(earth);
+        StellarBody lump = new StellarBody(1, 0, 10,
+                0, 0, 1, s);
+        Space.add(lump);
         s.step();
         assertEquals(10 - 9.82 / 2, lump.y, 0.02);
         assertEquals(-9.82, lump.vy, 0.02);
@@ -29,9 +32,9 @@ public class TestGravitation {
 
     @Test
     public void mergeWithoutSpeed() throws Exception {
-        PhysicalObject one = new PhysicalObject(1, 1, 0, 0, 0, 1, null);
-        PhysicalObject other = new PhysicalObject(1, 0, 1, 0, 0, 1, null);
-        PhysicalObject merge = one.absorb(other);
+        StellarBody one = new StellarBody(1, 1, 0, 0, 0, 1, null);
+        StellarBody other = new StellarBody(1, 0, 1, 0, 0, 1, null);
+        StellarBody merge = one.absorb(other);
         assertEquals(0.5, merge.x, 0.00001);
         assertEquals(0.5, merge.y, 0.00001);
         assertEquals(0.0, merge.vx, 0.00001);
@@ -40,9 +43,9 @@ public class TestGravitation {
 
     @Test
     public void mergeWithSpeed() throws Exception {
-        PhysicalObject one = new PhysicalObject(1, 1, 0, 1, 0, 1, null);
-        PhysicalObject other = new PhysicalObject(1, 0, 1, 0, 1, 1, null);
-        PhysicalObject merge = one.absorb(other);
+        StellarBody one = new StellarBody(1, 1, 0, 1, 0, 1, null);
+        StellarBody other = new StellarBody(1, 0, 1, 0, 1, 1, null);
+        StellarBody merge = one.absorb(other);
         assertEquals(0.5, merge.x, 0.00001);
         assertEquals(0.5, merge.y, 0.00001);
         assertEquals(0.5, merge.vx, 0.00001);
@@ -52,9 +55,9 @@ public class TestGravitation {
 
     @Test
     public void mergeWithSpeedAndDifferentMasses() throws Exception {
-        PhysicalObject one = new PhysicalObject(1, 1, 1, 1, 0, 1, null);
-        PhysicalObject other = new PhysicalObject(4, 0, 0, 0, 1, 1, null);
-        PhysicalObject merge = one.absorb(other);
+        StellarBody one = new StellarBody(1, 1, 1, 1, 0, 1, null);
+        StellarBody other = new StellarBody(4, 0, 0, 0, 1, 1, null);
+        StellarBody merge = one.absorb(other);
         assertEquals(0.2, merge.x, 0.00001);
         assertEquals(0.2, merge.y, 0.00001);
         assertEquals(0.2, merge.vx, 0.00001);
@@ -64,9 +67,9 @@ public class TestGravitation {
 
     @Test
     public void headsOnMergeConservesZeroSumMomentum() throws Exception {
-        PhysicalObject one = new PhysicalObject(10, 0, 0, 100, 100, 1, null);
-        PhysicalObject other = new PhysicalObject(100, 0, 0, -10, -10, 1, null);
-        PhysicalObject merge = one.absorb(other);
+        StellarBody one = new StellarBody(10, 0, 0, 100, 100, 1, null);
+        StellarBody other = new StellarBody(100, 0, 0, -10, -10, 1, null);
+        StellarBody merge = one.absorb(other);
         assertEquals(0, merge.x, 0.00001);
         assertEquals(0, merge.y, 0.00001);
         assertEquals(0, merge.vx, 0.00001);
@@ -76,9 +79,9 @@ public class TestGravitation {
 
     @Test
     public void headsOnMergeConservesMomentum() throws Exception {
-        PhysicalObject one = new PhysicalObject(10, 0, 0, 10, 10, 1, null);
-        PhysicalObject other = new PhysicalObject(100, 0, 0, 0, 0, 1, null);
-        PhysicalObject merge = one.absorb(other);
+        StellarBody one = new StellarBody(10, 0, 0, 10, 10, 1, null);
+        StellarBody other = new StellarBody(100, 0, 0, 0, 0, 1, null);
+        StellarBody merge = one.absorb(other);
         assertEquals(0, merge.x, 0.00001);
         assertEquals(0, merge.y, 0.00001);
         assertEquals(100 / 110.0, merge.vx, 0.00001);
