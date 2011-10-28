@@ -64,7 +64,7 @@ public abstract class Space<T extends PhysicalObject<T>> extends  JFrame impleme
                 graphics.clearRect(0, 0, getWidth(), getHeight());
             }
             for (T po : objects) {
-                po.paintPhysicalObject(graphics);
+                po.paint(graphics);
                 String string = "Objects:" + objects.size() + " scale:" + getScale() + " steps:" + step + " frame rate: " + frameRate;
                 setTitle(string);
             }

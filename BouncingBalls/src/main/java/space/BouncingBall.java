@@ -117,7 +117,7 @@ public class BouncingBall extends PhysicalObject<BouncingBall> {
     }
 
     @Override
-    public void paintPhysicalObject(Graphics2D graphics) {
+    public void paint(Graphics2D graphics) {
         graphics.setColor(Color.WHITE);
         int xtmp = (int) (space.newXpos(x));
         int ytmp = (int) (space.newYpos(y));
