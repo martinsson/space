@@ -1,7 +1,7 @@
 package space;
 
 
-public class BouncingSpace extends Space {
+public class BouncingSpace extends Space<BouncingBall> {
 
     private static final long serialVersionUID = 1L;
     private boolean isBreakout;

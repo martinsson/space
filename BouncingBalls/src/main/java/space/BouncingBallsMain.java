@@ -5,11 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 class BouncingBallsMain {
     
     public static void main(String[] args) throws InterruptedException, InvocationTargetException {
-        Space space;
+        Space<BouncingBall> space;
         space = configureBouncingBalls();
         Space.startSpace(space);
     }
-    private static Space configureBouncingBalls() {
+    private static BouncingSpace configureBouncingBalls() {
         BouncingSpace space = new BouncingSpace(AppConfiguration.IS_BREAKOUT);
 //        space.addMouseWheelListener(space);
 //        space.addMouseMotionListener(space);
@@ -22,7 +22,7 @@ class BouncingBallsMain {
             double radiusAndWeight = 1 + 19 * Math.random();
             BouncingBall physicalObject = new BouncingBall(radiusAndWeight, 20 + 760 * Math.random(), 20 + 760 * Math.random(),
                     3 - 6 * Math.random(), 3 - 6 * Math.random(), radiusAndWeight, space);
-            Space.add(physicalObject);
+            space.add(physicalObject);
             //x,y in [max radius, width or height - max radius]
 
         }

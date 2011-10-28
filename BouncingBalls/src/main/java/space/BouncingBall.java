@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.List;
 
-public class BouncingBall extends PhysicalObject {
+public class BouncingBall extends PhysicalObject<BouncingBall> {
 
     private BouncingSpace bouncingSpace;
 
@@ -15,13 +15,13 @@ public class BouncingBall extends PhysicalObject {
     }
 
     @Override
-    protected void update(List<PhysicalObject> objects, double seconds) {
+    protected void update(List<BouncingBall> objects, double seconds) {
             x = x + vx * seconds;
             y = y + vy * seconds;
     }
 
     @Override
-    public PhysicalObject handleCollision(PhysicalObject other) {
+    public BouncingBall handleCollision(BouncingBall other) {
         double distance = Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2));
         double collsionDistance = radius + other.radius;
         if (distance < collsionDistance) {
@@ -30,7 +30,7 @@ public class BouncingBall extends PhysicalObject {
         return null;
     }
     
-    void hitBy(PhysicalObject other) {
+    void hitBy(BouncingBall other) {
         // find collision point by backstepping
 
         //backstep increment
@@ -97,8 +97,8 @@ public class BouncingBall extends PhysicalObject {
     }
 
     @Override
-    public PhysicalObject collideWithWalls() {
-        PhysicalObject toRemove = null;
+    public BouncingBall collideWithWalls() {
+        BouncingBall toRemove = null;
         if (x - radius < 0) {
             vx = -vx;
         }

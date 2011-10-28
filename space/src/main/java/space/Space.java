@@ -12,10 +12,10 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame {
+public abstract class Space<T extends PhysicalObject<T>> extends  JFrame implements  KeyListener, SpaceFrame {
     private static final long serialVersionUID = 1532817796535372081L;
     private double seconds = 1;
-    private static List<PhysicalObject> objects = new ArrayList<PhysicalObject>();
+    private List<T> objects = new ArrayList<T>();
     private double centrex = 0.0;
     private double centrey = 0.0;
     private double scale = 10;
@@ -25,11 +25,11 @@ public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame 
     private static int frameRate = 25;
 
     static int nrOfObjects = 75;
-    public static void add(PhysicalObject physicalObject) {
+    public  void add(T physicalObject) {
         objects.add(physicalObject);
     }
 
-    public static void startSpace(final Space space) throws InterruptedException, InvocationTargetException {
+    public static <O extends PhysicalObject<O>> void  startSpace(final Space<O> space) throws InterruptedException, InvocationTargetException {
         space.setVisible(true);
         while (true) {
             final long start = System.currentTimeMillis();
@@ -63,7 +63,7 @@ public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame 
             if (!showWake) {
                 graphics.clearRect(0, 0, getWidth(), getHeight());
             }
-            for (PhysicalObject po : objects) {
+            for (T po : objects) {
                 po.paintPhysicalObject(graphics);
                 String string = "Objects:" + objects.size() + " scale:" + getScale() + " steps:" + step + " frame rate: " + frameRate;
                 setTitle(string);
@@ -78,7 +78,7 @@ public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame 
     }
     
     public void step() {
-        for (PhysicalObject o : objects) {
+        for (T o : objects) {
             o.update(objects, getSeconds());
         }
         step++;
@@ -87,18 +87,18 @@ public abstract class Space extends  JFrame implements  KeyListener, SpaceFrame 
     }
 
     private void collide() {
-        List<PhysicalObject> remove = new ArrayList<PhysicalObject>();
-        for (PhysicalObject one : objects) {
+        List<T> remove = new ArrayList<T>();
+        for (T one : objects) {
             if (remove.contains(one))
                 continue;
-            for (PhysicalObject other : objects) {
+            for (T other : objects) {
                 if (one == other || remove.contains(other))
                     continue;
-                PhysicalObject toRemove = one.handleCollision(other);
+                T toRemove = one.handleCollision(other);
                 remove.add(toRemove);
             }
             // Wall collision reverses speed in that direction
-            PhysicalObject toRemove = one.collideWithWalls();
+            T toRemove = one.collideWithWalls();
             remove.add(toRemove);
         }
         objects.removeAll(remove);
